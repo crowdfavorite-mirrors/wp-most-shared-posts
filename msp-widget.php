@@ -57,7 +57,7 @@ class Most_Shared_Posts extends WP_Widget {
 	 */
 	function widget( $args, $instance ) {
 		extract( $args );
-
+		$category = $instance['category'];
 		/* Our variables from the widget settings. */
 		$title = apply_filters('widget_title', $instance['title'] );
 
@@ -71,7 +71,7 @@ class Most_Shared_Posts extends WP_Widget {
 		// Setup our recency limit for this widget instance
 		$recency_limit_unit = isset( $instance['recency_limit_unit'] ) ? $instance['recency_limit_unit'] : 2;
 		
-		$this->recency_limit = 730;
+		$this->recency_limit = 7;
 		
 		switch($recency_limit_unit)
 		{
@@ -87,7 +87,7 @@ class Most_Shared_Posts extends WP_Widget {
 			default:
 				$this->recency_limit = 730;
 				break;
-		}
+		}				
 		
 		// If something went wrong then set 2 years as a fallback.
 		if ($this->recency_limit <= 0)
@@ -165,6 +165,7 @@ class Most_Shared_Posts extends WP_Widget {
 			'posts_per_page' => $number_of_posts,
 			'orderby' => 'meta_value_num',
 		    'meta_key' => '_msp_total_shares',
+		    'cat' => $category,
 			'order' => 'DESC'
 		);
 		
@@ -177,13 +178,13 @@ class Most_Shared_Posts extends WP_Widget {
 		
 		
 		// Start the loop to loop over each post we are going to
-		// list in the widget.
+		// list in the widget.		
 		
-		
-		//echo "<!-- Begin loop for showing. -->";
-					
-		echo '<ul class="entries">';
-			
+		$iteration=0;
+		// hack for headline
+		?>
+		<div class="posts-top">		
+		<?								
 		while ( $posts_in_range->have_posts() ) : $posts_in_range->the_post();
 			
 			//echo "<!-- Next post -->";
@@ -193,66 +194,70 @@ class Most_Shared_Posts extends WP_Widget {
 			$plusones = get_post_meta(get_the_ID(), "_msp_google_plus_ones", true);
 			$totals = get_post_meta(get_the_ID(), "_msp_total_shares", true);
 			
+			$category = get_the_category(); 
+			$post_category = $category[1]->cat_name;
+			$post_category = cat_singular($post_category);
 			
-			//echo "<!-- Likes fetched as = " . $fb_likes . " -->";
-			//echo "<!-- Tweets fetched as = " . $tweets . " -->";
-			//echo "<!-- PlusOnes fetched as = " . $plusones . " -->";
-			//echo "<!-- Totals fetched as = " . $totals . " -->";
-			
-			echo '<li>';
-	
-			if ($h3_wrap)
-				echo '<h3 class="post-title" >';
-			
-			echo '<a href="' . get_permalink() . '" rel="bookmark">' . get_the_title() . '</a>';
-			
-			if ($h3_wrap)
-				echo '</h3>';
-			
-			//echo '<span class="date">' . get_the_date() . '</span>';
-			
-			if (!$suppress_icons)
+			if ($iteration==0)
 			{
-				echo '<div class="share-counts ' . $css_class_font . '">';
+				?>
 				
+				<div class="feature-big same" style="padding:17px 15px 20px 16px;">
+					
+						<div class="video"><a href="<?php echo get_permalink( $post->ID ); ?>?utm_source=cat_latest"><? the_post_thumbnail(); ?></a></div>
+						<strong class="category"><?=$post_category?></strong>						
+						<h3><a href="<?php echo get_permalink( $post->ID ); ?>?utm_source=cat_latest_big"><? the_title(); ?></a></h3>
+						<em class="date"><?php the_time('F jS, Y') ?></em>
+								
+						<div class="share-counts">
+							<img src="<?=plugins_url('facebook_icon.png', __FILE__)?>" class="share-item" />
+							<span class="share-item"><?=$fb_likes?></span>
+							<img src="<?=plugins_url('twitter_icon.png', __FILE__)?>" class="share-item share-item-twitter" />
+							<span class="share-item"><?=$tweets?></span>
+						</div>											
 				
+				</div>
+				<div class="features-box same" style="border-right:1px solid #bcd6e0;min-height:400px;">
+				<?
+			
+			} else
+			{
+			
+				?>
+					<div class="feature"> 
+						<a href="<?php echo get_permalink( $post->ID ); ?>?utm_source=cat_latest"><? the_post_thumbnail('thumb-small'); ?></a>
+						<div class="text"> <strong class="category"><?=$post_category?></strong>
+							<h3><a href="<?php echo get_permalink( $post->ID ); ?>?utm_source=cat_latest"><? the_title(); ?></a></h3>							
+						</div>
+												
+						<div class="share-counts-small">
+							<img src="<?=plugins_url('facebook_icon.png', __FILE__)?>" class="share-item" />
+							<span class="share-item"><?=$fb_likes?></span>
+							<img src="<?=plugins_url('twitter_icon.png', __FILE__)?>" class="share-item share-item-twitter" />
+							<span class="share-item"><?=$tweets?></span>
+						</div>					
+					</div>							
+							
+					<div style="clear:both;"></div>
 				
-				if ($include_google_count)
-				{
-				echo '<img src="' . plugins_url('google_icon.png', __FILE__) . '" width="'.$icon_pixel_size.'px" height="'.$icon_pixel_size.'px" title="Google +1s" alt="Google +1 logo" />' . $plusones;
+				<?	
 				
-				echo " &nbsp; ";
+				if ($iteration==3) {
+					echo "</div>";
 				}
-				
-				
-				if ($include_twitter_count)
-				{
-				echo '<img src="' . plugins_url('twitter_icon.png', __FILE__) . '" width="'.$icon_pixel_size.'px" height="'.$icon_pixel_size.'px" title="Tweets" alt="Twitter logo" />' . $tweets;
-				
-				echo " &nbsp; ";
-				}
-				
-				if ($include_fb_count)
-				{
-				echo '<img src="' . plugins_url('facebook_icon.png', __FILE__) . '" width="'.$icon_pixel_size.'px" height="'.$icon_pixel_size.'px" title="Facebook shares" alt="Facebook logo" />' . $fb_likes;
-				}
-				
-				//echo '<img src="' . plugins_url('shares_icon.png', __FILE__) . '" width="12px" height="12px" />' . $totals;
-				
-				
-				echo '</div>';
+						
+			
 			}
-				
-			echo '</li>';
-		
+									
+			$iteration++;
 		endwhile;
 		// End loop over ther posts to show.
-				
-		echo '</ul>';
+		
+		echo '</div>';
 		
 		if ($attribution_link)
 		{
-			echo "<small>Plugin by <a href='http://www.tomanthony.co.uk/wordpress-plugins/most-shared-posts/'>Tom Anthony</a></small>";
+			//echo "<small>Plugin by <a href='http://www.tomanthony.co.uk/wordpress-plugins/most-shared-posts/'>Tom Anthony</a></small>";
 		}
 		
 		wp_reset_postdata();
