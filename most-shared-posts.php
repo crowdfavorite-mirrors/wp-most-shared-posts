@@ -3,7 +3,7 @@
 Plugin Name: Most Shared Posts
 Plugin URI: http://www.tomanthony.co.uk/wordpress-plugins/most-shared-posts/
 Description: Showcases your posts with the most social shares to your visitors in the sidebar. Please consider a small <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZS48RS294BLGN" target="_blank">donation</a>.
-Version: 10.1.0
+Version: 1.1.0-SMP-FS
 Author: Tom Anthony
 Author URI: http://www.tomanthony.co.uk/
 
