@@ -1,0 +1,41 @@
+.share-counts img
+{
+	/*margin: 3px;
+	margin-right: 6px;
+	margin-left: 15px;*/
+	margin-right: 3px;
+	background-color: transparent;
+	vertical-align: middle;
+	position: relative;
+	top: -1px;
+}
+
+
+.share-counts-smaller
+{
+	font-size: 0.8em;
+}
+
+.share-counts-standard
+{
+}
+
+.share-counts-bigger
+{
+	font-size: 1.1em;
+}
+
+.share-counts-even-bigger
+{
+	font-size: 1.2em;
+}
+
+.share-counts-huge
+{
+	font-size: 1.4em;
+}
+
+.most-shared-posts
+{
+
+}
