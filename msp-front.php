@@ -25,12 +25,12 @@ function most_shared_posts_shortcode_widget_placer( $atts ) {
 		'title' => 'Most Shared Posts',
 		'num_posts' => '5',
 		'max_month_age' => '24',
-		'category' => '5'
+		'category' => SMP_FEATURED_CAT_ID
 	), $atts ) );
-	
+
 	$widget_instance = array( 'title' => $title, 'recency_limit_unit' => 'days', 'recency_limit_number' => $max_month_age, 'number_of_posts_to_list' => $num_posts, 'category' => $category);
 	$args = array();
-		
+
 	the_widget('Most_Shared_Posts', $widget_instance, $args);
 }
 
