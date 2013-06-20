@@ -118,7 +118,13 @@ function most_shared_posts_update_social_data()
 				
 				// ... if not, then lets check the Facebook API.
 				$api_hits_counter++;
-				$facebook_api_results = file_get_contents("http://api.facebook.com/restserver.php?method=links.getStats&format=json&urls=" . urlencode(get_permalink()));
+		//		$facebook_api_results = file_get_contents("http://api.facebook.com/restserver.php?method=links.getStats&format=json&urls=" . urlencode(get_permalink()));
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "http://api.facebook.com/restserver.php?method=links.getStats&format=json&urls=" . urlencode(get_permalink()));
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$facebook_api_results = curl_exec($ch);
+curl_close($ch);
 				$parsed_facebook_api_results = json_decode($facebook_api_results, true);
 				
 				// The FB like button now shows the total shares count for FB,
